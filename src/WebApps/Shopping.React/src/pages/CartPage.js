@@ -14,6 +14,7 @@ const CartPage = () => {
 
   useEffect(() => {
     fetchBasket();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchBasket = async () => {
