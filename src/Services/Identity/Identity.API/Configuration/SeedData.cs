@@ -141,56 +141,7 @@ public static class SeedData
             }
         }
 
-        // Test customers with realistic data
-        var testCustomers = new[]
-        {
-            new { UserName = "customer", Email = "customer@shopping.com", FirstName = "Test", LastName = "Customer" },
-            new { UserName = "alice", Email = "alice@shopping.com", FirstName = "Alice", LastName = "Johnson" },
-            new { UserName = "bob", Email = "bob@shopping.com", FirstName = "Bob", LastName = "Wilson" },
-            new { UserName = "emily", Email = "emily@shopping.com", FirstName = "Emily", LastName = "Davis" },
-            new { UserName = "michael", Email = "michael@shopping.com", FirstName = "Michael", LastName = "Brown" },
-            new { UserName = "sarah", Email = "sarah@shopping.com", FirstName = "Sarah", LastName = "Miller" },
-            new { UserName = "david", Email = "david@shopping.com", FirstName = "David", LastName = "Garcia" },
-            new { UserName = "lisa", Email = "lisa@shopping.com", FirstName = "Lisa", LastName = "Anderson" },
-            new { UserName = "john", Email = "john@shopping.com", FirstName = "John", LastName = "Taylor" },
-            new { UserName = "maria", Email = "maria@shopping.com", FirstName = "Maria", LastName = "Lopez" }
-        };
-
-        foreach (var customerData in testCustomers)
-        {
-            var existingCustomer = await userManager.FindByNameAsync(customerData.UserName);
-            if (existingCustomer == null)
-            {
-                Log.Information("👤 Creating customer: {Username}...", customerData.UserName);
-                var customerUser = new ApplicationUser
-                {
-                    UserName = customerData.UserName,
-                    Email = customerData.Email,
-                    FirstName = customerData.FirstName,
-                    LastName = customerData.LastName,
-                    EmailConfirmed = true
-                };
-
-                var result = await userManager.CreateAsync(customerUser, "Customer123!");
-                if (result.Succeeded)
-                {
-                    await userManager.AddClaimsAsync(customerUser, new[]
-                    {
-                        new Claim("sub", customerUser.Id),
-                        new Claim("name", customerUser.FullName),
-                        new Claim("given_name", customerUser.FirstName),
-                        new Claim("family_name", customerUser.LastName),
-                        new Claim("email", customerUser.Email),
-                        new Claim("role", "customer")
-                    });
-                    Log.Information("✅ Customer {Username} created successfully", customerData.UserName);
-                }
-                else
-                {
-                    Log.Error("❌ Failed to create customer {Username}: {Errors}",
-                        customerData.UserName, string.Join(", ", result.Errors.Select(e => e.Description)));
-                }
-            }
-        }
+        // Only keep admin and one demo user - users should register themselves
+        Log.Information("✅ Users can now register themselves via the registration system");
     }
 }
