@@ -62,16 +62,57 @@ builder.Services.AddHealthChecks()
 
 var app = builder.Build();
 
-// Initialize seed data in development
+// Initialize database and seed data in development
 if (app.Environment.IsDevelopment())
 {
+    await InitializeDatabaseAsync(app);
+}
+
+async Task InitializeDatabaseAsync(WebApplication app)
+{
     using var scope = app.Services.CreateScope();
-    var basketRepository = scope.ServiceProvider.GetRequiredService<IBasketRepository>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-    // Wait a bit to ensure database is ready
-    await Task.Delay(2000);
-    await BasketSeedData.SeedAsync(basketRepository, logger);
+    // Retry logic for database connection
+    var maxRetries = 30;
+    var retryDelay = TimeSpan.FromSeconds(2);
+
+    for (int retry = 0; retry < maxRetries; retry++)
+    {
+        try
+        {
+            logger.LogInformation("🔄 Attempting to connect to PostgreSQL (attempt {Retry}/{MaxRetries})", retry + 1, maxRetries);
+
+            // Test Marten connection
+            var documentStore = scope.ServiceProvider.GetRequiredService<IDocumentStore>();
+            using var session = documentStore.LightweightSession();
+
+            // Ensure database exists and is migrated
+            await documentStore.Advanced.Clean.CompletelyRemoveAllAsync();
+            await documentStore.Storage.ApplyAllConfiguredChangesToDatabaseAsync();
+
+            logger.LogInformation("✅ PostgreSQL connection successful, seeding basket data...");
+
+            var basketRepository = scope.ServiceProvider.GetRequiredService<IBasketRepository>();
+            await BasketSeedData.SeedAsync(basketRepository, logger);
+
+            logger.LogInformation("✅ Basket database initialization completed successfully");
+            return;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("⚠️ Database connection failed (attempt {Retry}/{MaxRetries}): {Error}",
+                retry + 1, maxRetries, ex.Message);
+
+            if (retry == maxRetries - 1)
+            {
+                logger.LogError("❌ Failed to connect to PostgreSQL after {MaxRetries} attempts", maxRetries);
+                throw;
+            }
+
+            await Task.Delay(retryDelay);
+        }
+    }
 }
 
 // Configure the HTTP request pipeline.
