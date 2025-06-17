@@ -6,6 +6,7 @@ import "./CheckoutPage.css";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { getCurrentUser, getCurrentCustomerId, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [basket, setBasket] = useState(null);
