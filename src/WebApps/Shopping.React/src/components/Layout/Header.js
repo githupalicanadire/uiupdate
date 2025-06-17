@@ -8,20 +8,20 @@ const Header = () => {
       <div className="container">
         <div className="header-content">
           <Link to="/" className="logo">
-            E-Shop
+            🧸 ToyLand 🎮
           </Link>
           <nav className="nav">
             <Link to="/" className="nav-link">
-              Ana Sayfa
+              🏠 Ana Sayfa
             </Link>
             <Link to="/products" className="nav-link">
-              Ürünler
+              🎁 Oyuncaklar
             </Link>
             <Link to="/cart" className="nav-link">
-              Sepet
+              🛒 Sepetim
             </Link>
             <Link to="/orders" className="nav-link">
-              Siparişlerim
+              📦 Siparişlerim
             </Link>
           </nav>
         </div>

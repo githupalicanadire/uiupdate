@@ -1,8 +1,9 @@
 .header {
-  background-color: #343a40;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-bottom: 4px solid #ffd700;
 }
 
 .header-content {
@@ -12,14 +13,18 @@
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
   color: #fff;
   text-decoration: none;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
 .logo:hover {
-  color: #f8f9fa;
+  color: #ffd700;
+  transform: scale(1.05);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .nav {
@@ -30,14 +35,19 @@
 .nav-link {
   color: #fff;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  padding: 0.7rem 1.2rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  border: 2px solid transparent;
 }
 
 .nav-link:hover {
-  background-color: #495057;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
