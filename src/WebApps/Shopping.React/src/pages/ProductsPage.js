@@ -73,7 +73,7 @@ const ProductsPage = () => {
     try {
       setAddingToCart((prev) => ({ ...prev, [product.id]: true }));
 
-      const userName = "swn"; // Demo user
+      const userName = getCurrentUser(); // Demo user
 
       const item = {
         productId: product.id,
