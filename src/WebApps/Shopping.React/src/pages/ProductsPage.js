@@ -29,22 +29,26 @@ const ProductsPage = () => {
   const addToCart = (product) => {
     // This would integrate with basket service
     console.log("Adding to cart:", product);
-    alert(`${product.name} sepete eklendi!`);
+    alert(`🎉 ${product.name} sepetinize eklendi! 🛒`);
   };
 
   if (loading) {
-    return <div className="loading">Ürünler yükleniyor...</div>;
+    return <div className="loading">🎪 Oyuncaklar hazırlanıyor... ✨</div>;
   }
 
   if (error) {
-    return <div className="error">Hata: {error}</div>;
+    return (
+      <div className="error">
+        😔 Oyuncakları yüklerken sorun oluştu: {error}
+      </div>
+    );
   }
 
   return (
     <div className="products-page">
       <div className="page-header">
-        <h1>Ürünler</h1>
-        <p>Tüm ürünlerimizi keşfedin</p>
+        <h1>🎁 Oyuncak Dünyamız 🌟</h1>
+        <p>🧸 Hayal ettiğiniz her oyuncak burada! 🎮</p>
       </div>
 
       <div className="products-grid">
@@ -73,14 +77,16 @@ const ProductsPage = () => {
                     className="btn btn-primary add-to-cart-btn"
                     onClick={() => addToCart(product)}
                   >
-                    Sepete Ekle
+                    🛒 Sepete At!
                   </button>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className="no-products">Henüz ürün bulunmamaktadır.</div>
+          <div className="no-products">
+            🔍 Henüz oyuncak bulunmamaktadır. Yakında geliyor! 🎁
+          </div>
         )}
       </div>
 
@@ -90,15 +96,15 @@ const ProductsPage = () => {
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
         >
-          Önceki
+          ⬅️ Önceki
         </button>
-        <span className="page-info">Sayfa {currentPage}</span>
+        <span className="page-info">📄 Sayfa {currentPage}</span>
         <button
           className="btn btn-secondary"
           onClick={() => setCurrentPage((prev) => prev + 1)}
           disabled={products.length < pageSize}
         >
-          Sonraki
+          Sonraki ➡️
         </button>
       </div>
     </div>
