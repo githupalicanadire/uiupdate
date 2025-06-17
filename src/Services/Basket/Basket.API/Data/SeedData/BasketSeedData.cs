@@ -57,26 +57,26 @@ public static class BasketSeedData
                     new ShoppingCartItem
                     {
                         ProductId = Guid.Parse("6ec1297b-ec0a-4aa1-be25-6726e3b51a27"),
-                        ProductName = "🧩 Puzzle Game",
-                        Price = 19.99m,
-                        Quantity = 3,
+                        ProductName = "UNO Reverse Pack Eklenti Paketi",
+                        Price = 119.99m,
+                        Quantity = 2,
                         Color = "Default"
                     },
                     new ShoppingCartItem
                     {
-                        ProductId = Guid.Parse("b786103d-c621-4f5a-b498-23452610f88c"),
-                        ProductName = "🚀 Space Rocket",
-                        Price = 34.99m,
+                        ProductId = Guid.Parse("b786103d-c621-4f5a-b498-23312a3fa792"),
+                        ProductName = "UNO Stack Pack Eklenti Paketi",
+                        Price = 119.99m,
                         Quantity = 1,
-                        Color = "Silver"
+                        Color = "Default"
                     },
                     new ShoppingCartItem
                     {
-                        ProductId = Guid.Parse("5334c996-8457-4cf0-815c-ed2b77c4ff61"),
-                        ProductName = "🧸 Teddy Bear",
-                        Price = 29.99m,
+                        ProductId = Guid.Parse("9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f"),
+                        ProductName = "Bontempi Işıklı Mikrofonlu Elektronik Tabureli Org",
+                        Price = 2699.00m,
                         Quantity = 1,
-                        Color = "White"
+                        Color = "Pink"
                     }
                 }
             },
