@@ -30,6 +30,12 @@ services:
       - "5433:5432"
     volumes:
       - postgres_basket:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d BasketDb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   distributedcache:
     container_name: distributedcache
