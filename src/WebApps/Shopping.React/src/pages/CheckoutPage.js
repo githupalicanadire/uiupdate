@@ -26,10 +26,6 @@ const CheckoutPage = () => {
     userName: "swn", // Demo user
   });
 
-  useEffect(() => {
-    fetchBasket();
-  }, []);
-
   const fetchBasket = async () => {
     try {
       setBasketLoading(true);
