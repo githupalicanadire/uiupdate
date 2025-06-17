@@ -19,18 +19,18 @@ public static class BasketSeedData
                     new ShoppingCartItem
                     {
                         ProductId = Guid.Parse("5334c996-8457-4cf0-815c-ed2b77c4ff61"),
-                        ProductName = "🧸 Teddy Bear",
-                        Price = 29.99m,
+                        ProductName = "Squid Game 5 Taş Oyunu",
+                        Price = 149.99m,
                         Quantity = 2,
-                        Color = "Brown"
+                        Color = "Default"
                     },
                     new ShoppingCartItem
                     {
-                        ProductId = Guid.Parse("c67d6323-e8b1-4bdf-9a75-b0d0d2e7e914"),
-                        ProductName = "🚗 Racing Car",
-                        Price = 24.99m,
+                        ProductId = Guid.Parse("c67d6323-e8b0-4bdd-a7e6-a593eb6068e8"),
+                        ProductName = "Smile Games Günün Sorusu Kutu Oyunu",
+                        Price = 274.99m,
                         Quantity = 1,
-                        Color = "Red"
+                        Color = "Default"
                     }
                 }
             },
@@ -142,7 +142,7 @@ public static class BasketSeedData
             basket.Items.AddRange(basketData.Items);
 
             await repository.StoreBasket(basket);
-            logger.LogInformation("✅ Created basket for {UserName} with {ItemCount} items", 
+            logger.LogInformation("✅ Created basket for {UserName} with {ItemCount} items",
                 basketData.UserName, basketData.Items.Length);
         }
 
