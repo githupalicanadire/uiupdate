@@ -80,14 +80,21 @@ public static class SeedData
         }
 
         // Seed API Resources
-        if (!await configurationDbContext.ApiResources.AnyAsync())
+        try
         {
-            Log.Information("🌐 Seeding API resources...");
-            foreach (var resource in Config.ApiResources)
+            if (!await configurationDbContext.ApiResources.AnyAsync())
             {
-                await configurationDbContext.ApiResources.AddAsync(resource.ToEntity());
+                Log.Information("🌐 Seeding API resources...");
+                foreach (var resource in Config.ApiResources)
+                {
+                    await configurationDbContext.ApiResources.AddAsync(resource.ToEntity());
+                }
+                await configurationDbContext.SaveChangesAsync();
             }
-            await configurationDbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("⚠️ Error seeding API resources: {Error}", ex.Message);
         }
 
         // Seed Clients
