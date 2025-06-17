@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { basketService } from "../services/basketService";
-import { getCurrentUser } from "../config/userConfig";
+import { useAuth } from "../contexts/AuthContext";
 import "./CartPage.css";
 
 const CartPage = () => {
@@ -9,7 +9,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // For demo purposes, using a static username
+  const { getCurrentUser } = useAuth();
   const userName = getCurrentUser();
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const CartPage = () => {
         totalPrice: updatedItems.reduce((sum, item) => sum + item.price, 0),
       };
 
-      console.log("🔄 Updating basket quantity:", updatedBasket);
+      console.log("��� Updating basket quantity:", updatedBasket);
       await basketService.storeBasket(updatedBasket);
       setBasket(updatedBasket);
       setError(null); // Clear any previous errors
