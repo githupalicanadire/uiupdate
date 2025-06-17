@@ -67,13 +67,13 @@ const CheckoutPage = () => {
   return (
     <div className="checkout-page">
       <div className="page-header">
-        <h1>Sipariş Tamamla</h1>
+        <h1>🎉 Siparişi Tamamla 🛒</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="checkout-form">
         <div className="form-sections">
           <div className="form-section">
-            <h2>Teslimat Bilgileri</h2>
+            <h2>🏠 Teslimat Bilgileri</h2>
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="firstName">Ad</label>
@@ -161,7 +161,7 @@ const CheckoutPage = () => {
           </div>
 
           <div className="form-section">
-            <h2>Ödeme Bilgileri</h2>
+            <h2>💳 Ödeme Bilgileri</h2>
             <div className="form-group">
               <label htmlFor="cardName">Kart Sahibi Adı</label>
               <input
@@ -224,10 +224,10 @@ const CheckoutPage = () => {
             className="btn btn-secondary"
             onClick={() => navigate("/cart")}
           >
-            Sepete Dön
+            ⬅️ Sepete Dön
           </button>
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? "Sipariş Veriliyor..." : "Sipariş Ver"}
+            {loading ? "🎁 Sipariş Veriliyor..." : "🎉 Sipariş Ver"}
           </button>
         </div>
       </form>
