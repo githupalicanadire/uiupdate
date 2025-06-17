@@ -9,13 +9,43 @@ public static class DatabaseExtentions
     public static async Task InitialiseDatabaseAsync(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
 
-        context.Database.MigrateAsync().GetAwaiter().GetResult();
+        // Retry logic for database connection
+        var maxRetries = 30;
+        var retryDelay = TimeSpan.FromSeconds(2);
 
-        await SeedAsync(context, logger);
+        for (int retry = 0; retry < maxRetries; retry++)
+        {
+            try
+            {
+                logger.LogInformation("🔄 Attempting to connect to Ordering SQL Server (attempt {Retry}/{MaxRetries})", retry + 1, maxRetries);
+
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                // Migrate database
+                await context.Database.MigrateAsync();
+
+                // Seed data
+                await SeedAsync(context, logger);
+
+                logger.LogInformation("✅ Ordering database initialization completed successfully");
+                return;
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning("⚠️ Ordering database connection failed (attempt {Retry}/{MaxRetries}): {Error}",
+                    retry + 1, maxRetries, ex.Message);
+
+                if (retry == maxRetries - 1)
+                {
+                    logger.LogError("❌ Failed to connect to Ordering SQL Server after {MaxRetries} attempts", maxRetries);
+                    throw;
+                }
+
+                await Task.Delay(retryDelay);
+            }
+        }
     }
 
     private static async Task SeedAsync(ApplicationDbContext context, ILogger logger)
