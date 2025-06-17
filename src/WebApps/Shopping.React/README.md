@@ -1,13 +1,15 @@
-# Shopping React Frontend
+# 🧸 ToyLand React Frontend 🎮
 
-Bu proje, E-Shop mikroservis mimarisinin React frontend uygulamasıdır.
+Bu proje, ToyLand oyuncak mağazasının React frontend uygulamasıdır.
 
-## Özellikler
+## 🎯 Özellikler
 
-- Modern React 18 ile geliştirilmiştir
-- Responsive tasarım
-- API Gateway üzerinden backend entegrasyonu
-- Docker container desteği
+- 🎨 Renkli ve eğlenceli oyuncak temalı tasarım
+- 🧸 Modern React 18 ile geliştirilmiştir
+- 📱 Responsive tasarım - mobil uyumlu
+- 🚀 API Gateway üzerinden backend entegrasyonu
+- 🐳 Docker container desteği
+- 🎪 Çocuk dostu kullanıcı arayüzü
 
 ## API Endpoints
 
