@@ -25,7 +25,7 @@ const CheckoutPage = () => {
     expiration: "",
     cvv: "",
     paymentMethod: 1, // Credit Card
-    userName: "", // Will be set from AuthContext
+    userName: getCurrentUser(),
   });
 
   const fetchBasket = async () => {
