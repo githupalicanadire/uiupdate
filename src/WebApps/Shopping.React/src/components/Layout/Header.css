@@ -50,6 +50,18 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+.debug-link {
+  background: rgba(255, 165, 0, 0.2) !important;
+  border: 2px solid #ff8c00 !important;
+  font-size: 0.9rem;
+}
+
+.debug-link:hover {
+  background: rgba(255, 165, 0, 0.4) !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+}
+
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
