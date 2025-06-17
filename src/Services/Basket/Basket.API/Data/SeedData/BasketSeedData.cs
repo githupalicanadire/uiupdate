@@ -102,19 +102,19 @@ public static class BasketSeedData
                 {
                     new ShoppingCartItem
                     {
-                        ProductId = Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890"),
-                        ProductName = "🏗️ Building Blocks",
-                        Price = 44.99m,
+                        ProductId = Guid.Parse("2570a6b5-4c3d-2e1f-0a9b-8c7d6e5f4a3b"),
+                        ProductName = "Sesli Disney Stitch Real Fx Elektronik Kukla 30 cm",
+                        Price = 4289.99m,
                         Quantity = 1,
-                        Color = "Multi"
+                        Color = "Blue"
                     },
                     new ShoppingCartItem
                     {
-                        ProductId = Guid.Parse("1a2b3c4d-5e6f-7890-abcd-ef1234567891"),
-                        ProductName = "🎪 Magic Set",
-                        Price = 32.99m,
-                        Quantity = 1,
-                        Color = "Black"
+                        ProductId = Guid.Parse("58a3d9e8-7f6a-5b4c-3d2e-1f0a9b8c7d6e"),
+                        ProductName = "1:64 Hot Wheels The Hot Ones Fiat 500 Topolino (1936)",
+                        Price = 249.99m,
+                        Quantity = 2,
+                        Color = "Red"
                     }
                 }
             }
