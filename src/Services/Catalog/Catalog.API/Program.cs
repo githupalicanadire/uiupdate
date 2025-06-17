@@ -17,11 +17,10 @@ builder.Services.AddCarter();
 
 builder.Services.AddMarten(opts =>
 {
-    opts.Connection(builder.Configuration.GetConnectionString("Database")!);    
+    opts.Connection(builder.Configuration.GetConnectionString("Database")!);
 }).UseLightweightSessions();
 
-if (builder.Environment.IsDevelopment())
-    builder.Services.InitializeMartenWith<CatalogInitialData>();
+// Note: InitializeMartenWith moved to runtime for better error handling
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
