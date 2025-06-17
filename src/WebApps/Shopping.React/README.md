@@ -11,15 +11,15 @@ Bu proje, ToyLand oyuncak mağazasının React frontend uygulamasıdır.
 - 🐳 Docker container desteği
 - 🎪 Çocuk dostu kullanıcı arayüzü
 
-## API Endpoints
+## 🔌 API Endpoints
 
 Uygulama aşağıdaki mikroservisleri kullanır:
 
-- **Catalog Service**: Ürün bilgileri
-- **Basket Service**: Sepet yönetimi
-- **Ordering Service**: Sipariş yönetimi
+- **🧸 Catalog Service**: Oyuncak bilgileri ve kategoriler
+- **🛒 Basket Service**: Sepet yönetimi
+- **📦 Ordering Service**: Sipariş yönetimi ve takip
 
-## Çalıştırma
+## 🚀 Çalıştırma
 
 ### Development Mode
 
@@ -33,14 +33,15 @@ npm start
 docker-compose up shopping.react
 ```
 
-## Port Bilgileri
+## 🌐 Port Bilgileri
 
-- Development: http://localhost:3000
-- Production (Docker): http://localhost:6006
+- Development: http://localhost:3000 🔧
+- Production (Docker): http://localhost:6006 🎪
 
-## Teknik Detaylar
+## 🛠️ Teknik Detaylar
 
-- React Router DOM ile routing
-- Axios ile API istekleri
-- CSS Modules ile stil yönetimi
-- Nginx ile production serving
+- ⚛️ React Router DOM ile routing
+- 📡 Axios ile API istekleri
+- 🎨 Renkli CSS ile oyuncak temalı tasarım
+- 🌐 Nginx ile production serving
+- 🎪 Emoji ve animasyonlarla eğlenceli UX
