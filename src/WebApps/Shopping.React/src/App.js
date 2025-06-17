@@ -23,6 +23,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
           <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/debug" element={<DebugPage />} />
         </Routes>
       </main>
       <Footer />
