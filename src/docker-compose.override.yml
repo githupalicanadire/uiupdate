@@ -155,8 +155,10 @@ services:
       - MessageBroker__Password=guest
       - FeatureManagement__OrderFullfilment=false
     depends_on:
-      - orderdb
-      - messagebroker
+      orderdb:
+        condition: service_healthy
+      messagebroker:
+        condition: service_started
     ports:
       - "6003:8080"
 
