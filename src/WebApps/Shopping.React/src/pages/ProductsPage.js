@@ -73,7 +73,14 @@ const ProductsPage = () => {
     try {
       setAddingToCart((prev) => ({ ...prev, [product.id]: true }));
 
-      const userName = getCurrentUser(); // Demo user
+      const { getCurrentUser, isAuthenticated } = useAuth();
+
+      if (!isAuthenticated()) {
+        alert("🔐 Sepete ürün eklemek için giriş yapmalısınız!");
+        return;
+      }
+
+      const userName = getCurrentUser();
 
       const item = {
         productId: product.id,
