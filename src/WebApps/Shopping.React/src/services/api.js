@@ -2,7 +2,11 @@ import axios from "axios";
 
 // API Gateway base URL - will be proxied through nginx in production
 const API_BASE_URL =
-  process.env.NODE_ENV === "production" ? "/api" : "http://localhost:6004";
+  process.env.NODE_ENV === "production"
+    ? "/api"
+    : window.location.hostname === "localhost"
+      ? "http://localhost:6004"
+      : "http://yarpapigateway:8080";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -26,22 +30,64 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
+    // Transform backend response to match our frontend expectations
+    if (response.data && typeof response.data === "object") {
+      // Handle paginated responses from backend
+      if (response.data.data && Array.isArray(response.data.data)) {
+        return {
+          ...response,
+          data: {
+            data: response.data.data,
+            pageNumber: response.data.pageNumber || 1,
+            pageSize: response.data.pageSize || 10,
+            totalCount: response.data.totalCount || response.data.data.length,
+          },
+        };
+      }
+    }
     return response;
   },
   (error) => {
-    console.error("API Error:", error);
+    console.error("🔴 API Error:", error);
+
+    let errorMessage = "Bir hata oluştu";
+
     if (error.response) {
-      // Server responded with error status
-      console.error("Response data:", error.response.data);
-      console.error("Response status:", error.response.status);
+      // Backend'den gelen hata mesajları
+      const { status, data } = error.response;
+      console.error("Response data:", data);
+      console.error("Response status:", status);
+
+      switch (status) {
+        case 400:
+          errorMessage = "Geçersiz istek";
+          break;
+        case 401:
+          errorMessage = "Yetki hatası";
+          break;
+        case 404:
+          errorMessage = "İstenen kaynak bulunamadı";
+          break;
+        case 500:
+          errorMessage = "Sunucu hatası";
+          break;
+        default:
+          errorMessage =
+            data?.message || data?.title || `HTTP ${status} hatası`;
+      }
     } else if (error.request) {
-      // Request was made but no response received
       console.error("No response received:", error.request);
+      errorMessage = "Sunucuya bağlanılamıyor";
     } else {
-      // Something else happened
       console.error("Error message:", error.message);
+      errorMessage = error.message;
     }
-    return Promise.reject(error);
+
+    // Frontend'e daha anlamlı hata mesajı gönder
+    const enhancedError = new Error(errorMessage);
+    enhancedError.originalError = error;
+
+    return Promise.reject(enhancedError);
   },
 );
 
