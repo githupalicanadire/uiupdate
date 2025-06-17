@@ -7,7 +7,7 @@ WORKDIR /app
 COPY WebApps/Shopping.React/package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY WebApps/Shopping.React/ ./
