@@ -62,14 +62,21 @@ public static class SeedData
         }
 
         // Seed API Scopes
-        if (!await configurationDbContext.ApiScopes.AnyAsync())
+        try
         {
-            Log.Information("🔒 Seeding API scopes...");
-            foreach (var scope in Config.ApiScopes)
+            if (!await configurationDbContext.ApiScopes.AnyAsync())
             {
-                await configurationDbContext.ApiScopes.AddAsync(scope.ToEntity());
+                Log.Information("🔒 Seeding API scopes...");
+                foreach (var scope in Config.ApiScopes)
+                {
+                    await configurationDbContext.ApiScopes.AddAsync(scope.ToEntity());
+                }
+                await configurationDbContext.SaveChangesAsync();
             }
-            await configurationDbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("⚠️ Error seeding API scopes: {Error}", ex.Message);
         }
 
         // Seed API Resources
