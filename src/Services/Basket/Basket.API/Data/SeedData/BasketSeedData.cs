@@ -41,11 +41,11 @@ public static class BasketSeedData
                 {
                     new ShoppingCartItem
                     {
-                        ProductId = Guid.Parse("4f136e9f-ff8c-4c1f-9a33-d12f689bdab8"),
-                        ProductName = "🎨 Art Set",
-                        Price = 39.99m,
+                        ProductId = Guid.Parse("4f136e07-cc90-4d8b-b847-68c0a3331d79"),
+                        ProductName = "Smile Games Matematik Oyunu",
+                        Price = 589.99m,
                         Quantity = 1,
-                        Color = "Multi"
+                        Color = "Default"
                     }
                 }
             },
