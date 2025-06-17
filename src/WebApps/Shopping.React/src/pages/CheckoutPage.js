@@ -143,7 +143,7 @@ const CheckoutPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
+  if (basketLoading) {
     return <div className="loading">🛒 Sepet bilgileri yükleniyor... ✨</div>;
   }
 
