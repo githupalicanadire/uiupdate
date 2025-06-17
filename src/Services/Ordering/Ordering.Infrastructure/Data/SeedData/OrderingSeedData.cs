@@ -66,22 +66,22 @@ public static class OrderingSeedData
                 var customerId = CustomerId.Of(customer.CustomerId);
                 var orderName = OrderName.Of($"ORD-{orderCounter:D6}");
 
-                // Random shipping address
+                // More realistic Turkish addresses
                 var addresses = new[]
                 {
-                    Address.Of($"{customer.UserName}", "User", $"{customer.UserName}@shopping.com", "Main Street 123", "Turkey", "Istanbul", "34000"),
-                    Address.Of($"{customer.UserName}", "User", $"{customer.UserName}@shopping.com", "Oak Avenue 456", "Turkey", "Ankara", "06000"),
-                    Address.Of($"{customer.UserName}", "User", $"{customer.UserName}@shopping.com", "Pine Road 789", "Turkey", "Izmir", "35000"),
-                    Address.Of($"{customer.UserName}", "User", $"{customer.UserName}@shopping.com", "Elm Street 321", "Turkey", "Bursa", "16000")
+                    Address.Of($"{customer.UserName}", "Müşteri", $"{customer.UserName}@shopping.com", "Bağdat Caddesi No: 123 Kadıköy", "Turkey", "Istanbul", "34710"),
+                    Address.Of($"{customer.UserName}", "Müşteri", $"{customer.UserName}@shopping.com", "Tunalı Hilmi Caddesi No: 45 Çankaya", "Turkey", "Ankara", "06680"),
+                    Address.Of($"{customer.UserName}", "Müşteri", $"{customer.UserName}@shopping.com", "Alsancak Mahallesi 1482 Sokak No: 12", "Turkey", "Izmir", "35220"),
+                    Address.Of($"{customer.UserName}", "Müşteri", $"{customer.UserName}@shopping.com", "Osmangazi Mahallesi Çekirge Caddesi No: 67", "Turkey", "Bursa", "16080")
                 };
                 var shippingAddress = addresses[random.Next(addresses.Length)];
 
-                // Random payment info
+                // Realistic payment info (masked card numbers)
                 var payments = new[]
                 {
-                    Payment.Of($"{customer.UserName}", "1234-5678-9012-3456", "12/25", "123", 1),
-                    Payment.Of($"{customer.UserName}", "5678-9012-3456-7890", "11/26", "456", 1),
-                    Payment.Of($"{customer.UserName}", "9012-3456-7890-1234", "10/27", "789", 1)
+                    Payment.Of($"{customer.UserName}", "4532-****-****-1234", "12/26", "***", 1),
+                    Payment.Of($"{customer.UserName}", "5461-****-****-5678", "08/27", "***", 1),
+                    Payment.Of($"{customer.UserName}", "4169-****-****-9012", "03/28", "***", 1)
                 };
                 var payment = payments[random.Next(payments.Length)];
 
@@ -94,28 +94,33 @@ public static class OrderingSeedData
                     payment
                 );
 
-                // Add 1-4 items to each order
-                var itemCount = random.Next(1, 5);
+                // Add realistic toy combinations to orders
+                var itemCount = random.Next(1, 4); // 1-3 items per order
                 var selectedProducts = sampleProducts.OrderBy(x => random.Next()).Take(itemCount);
 
                 foreach (var product in selectedProducts)
                 {
-                    var quantity = random.Next(1, 4);
+                    // Realistic quantities for toys (1-2 usually)
+                    var quantity = random.Next(1, 3);
                     var productId = ProductId.Of(product.Id);
 
                     order.Add(productId, quantity, product.Price);
                 }
 
-                // Set random order status
-                var statuses = new[] { OrderStatus.Pending, OrderStatus.Completed, OrderStatus.Cancelled };
+                // More realistic order status distribution
+                var statuses = new[] {
+                    OrderStatus.Completed, OrderStatus.Completed, OrderStatus.Completed, // 60% completed
+                    OrderStatus.Pending, OrderStatus.Pending, // 40% pending
+                    OrderStatus.Cancelled // 20% cancelled
+                };
                 var randomStatus = statuses[random.Next(statuses.Length)];
 
                 // Use reflection to set the status (since it might be private set)
                 var statusProperty = typeof(Order).GetProperty(nameof(Order.Status));
                 statusProperty?.SetValue(order, randomStatus);
 
-                // Set creation date in the past (last 30 days)
-                var createdDaysAgo = random.Next(0, 30);
+                // Set creation date in the past (last 60 days for order history)
+                var createdDaysAgo = random.Next(0, 60);
                 var createdAt = DateTime.UtcNow.AddDays(-createdDaysAgo);
 
                 // Use reflection to set created date
