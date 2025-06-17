@@ -16,6 +16,15 @@ services:
   messagebroker:
     image: rabbitmq:management
 
+  identitydb:
+    image: mcr.microsoft.com/mssql/server
+
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identityapi
+    build:
+      context: .
+      dockerfile: Services/Identity/Identity.API/Dockerfile
+
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
     build:
