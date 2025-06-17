@@ -8,6 +8,9 @@ using IdentityServer4.EntityFramework.Mappers;
 using Serilog;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,17 +102,17 @@ app.Run();
 async Task InitializeDatabase(WebApplication app)
 {
     using var serviceScope = app.Services.CreateScope();
-    
+
     // Migrate the database
     var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await context.Database.MigrateAsync();
-    
+
     var persistedGrantDbContext = serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
     await persistedGrantDbContext.Database.MigrateAsync();
-    
+
     var configurationDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
     await configurationDbContext.Database.MigrateAsync();
-    
+
     // Seed data
     await SeedData.EnsureSeedData(serviceScope.ServiceProvider);
 }
