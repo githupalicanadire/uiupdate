@@ -126,7 +126,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
+      - IdentityServerSettings__Authority=http://identity.api:8080
+      - IdentityServerSettings__Audience=gateway-api
+      - IdentityServerSettings__RequireHttpsMetadata=false
     depends_on:
+      - identity.api
       - catalog.api
       - basket.api
       - ordering.api
