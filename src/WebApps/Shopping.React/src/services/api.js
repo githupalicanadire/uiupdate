@@ -70,7 +70,16 @@ api.interceptors.response.use(
           errorMessage = "Geçersiz istek";
           break;
         case 401:
-          errorMessage = "Yetki hatası";
+          errorMessage = "Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.";
+          // Token expired, clear local storage
+          localStorage.removeItem("shopping_token");
+          // Redirect to login if not already there
+          if (!window.location.pathname.includes("/login")) {
+            window.location.href = "/login";
+          }
+          break;
+        case 403:
+          errorMessage = "Bu işlem için yetkiniz yok";
           break;
         case 404:
           errorMessage = "İstenen kaynak bulunamadı";
