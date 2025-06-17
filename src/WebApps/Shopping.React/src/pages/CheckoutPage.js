@@ -94,7 +94,10 @@ const CheckoutPage = () => {
 
       const basketCheckout = {
         userName: formData.userName,
-        customerId: getCurrentCustomerId(), // Demo customer ID
+        customerId:
+          getCurrentCustomerId() ||
+          user?.id ||
+          "00000000-0000-0000-0000-000000000000",
         totalPrice: basket.totalPrice,
 
         // Shipping & Billing Address
