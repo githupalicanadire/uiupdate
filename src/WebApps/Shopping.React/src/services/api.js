@@ -20,6 +20,13 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     console.log(`Making request to: ${config.url}`);
+
+    // Add JWT token if available
+    const token = localStorage.getItem("shopping_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => {
