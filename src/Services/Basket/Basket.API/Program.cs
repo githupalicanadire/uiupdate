@@ -89,8 +89,25 @@ async Task InitializeDatabaseAsync(WebApplication app)
             // Ensure database exists and is migrated
             await documentStore.Storage.ApplyAllConfiguredChangesToDatabaseAsync();
 
-            logger.LogInformation("✅ Basket database initialization completed successfully");
-            logger.LogInformation("ℹ️ No seed data for baskets - users will create their own shopping carts");
+            // Test Redis connection
+            logger.LogInformation("🔄 Testing Redis connection...");
+            var distributedCache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
+            await distributedCache.SetStringAsync("test-key", "test-value");
+            var testValue = await distributedCache.GetStringAsync("test-key");
+            await distributedCache.RemoveAsync("test-key");
+
+            if (testValue == "test-value")
+            {
+                logger.LogInformation("✅ Redis connection successful");
+            }
+            else
+            {
+                logger.LogWarning("⚠️ Redis connection issue - cache may not work properly");
+            }
+
+            logger.LogInformation("✅ Basket service initialization completed successfully");
+            logger.LogInformation("ℹ️ Baskets use Redis for caching and PostgreSQL for persistence");
+            logger.LogInformation("ℹ️ Users will create their own shopping carts - no pre-seeded baskets");
             return;
         }
         catch (Exception ex)
