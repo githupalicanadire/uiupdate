@@ -96,17 +96,19 @@ const CartPage = () => {
   };
 
   if (loading) {
-    return <div className="loading">Sepet yükleniyor...</div>;
+    return <div className="loading">🛒 Sepetiniz hazırlanıyor... ✨</div>;
   }
 
   if (error && !basket) {
-    return <div className="error">Hata: {error}</div>;
+    return (
+      <div className="error">😔 Sepet yüklenirken sorun oluştu: {error}</div>
+    );
   }
 
   return (
     <div className="cart-page">
       <div className="page-header">
-        <h1>Sepetim</h1>
+        <h1>🛒 Oyuncak Sepetim 🎁</h1>
       </div>
 
       {basket && basket.items && basket.items.length > 0 ? (
@@ -148,7 +150,7 @@ const CartPage = () => {
                     className="btn btn-danger remove-btn"
                     onClick={() => removeItem(item.productId)}
                   >
-                    Kaldır
+                    🗑️ Kaldır
                   </button>
                 </div>
               </div>
@@ -157,30 +159,30 @@ const CartPage = () => {
 
           <div className="cart-summary">
             <div className="summary-card">
-              <h3>Sipariş Özeti</h3>
+              <h3>🎯 Sipariş Özeti</h3>
               <div className="summary-line">
-                <span>Toplam Ürün:</span>
+                <span>🧸 Toplam Oyuncak:</span>
                 <span>{basket.items.length}</span>
               </div>
               <div className="summary-line">
-                <span>Toplam Adet:</span>
+                <span>📦 Toplam Adet:</span>
                 <span>
                   {basket.items.reduce((sum, item) => sum + item.quantity, 0)}
                 </span>
               </div>
               <div className="summary-line total">
-                <span>Toplam Tutar:</span>
+                <span>💰 Toplam Tutar:</span>
                 <span>${basket.totalPrice?.toFixed(2)}</span>
               </div>
               <div className="summary-actions">
                 <Link to="/checkout" className="btn btn-primary checkout-btn">
-                  Sipariş Ver
+                  🎉 Sipariş Ver
                 </Link>
                 <button
                   className="btn btn-secondary clear-btn"
                   onClick={clearBasket}
                 >
-                  Sepeti Temizle
+                  🗑️ Sepeti Temizle
                 </button>
               </div>
             </div>
@@ -188,10 +190,10 @@ const CartPage = () => {
         </div>
       ) : (
         <div className="empty-cart">
-          <h2>Sepetiniz boş</h2>
-          <p>Alışverişe başlamak için ürünleri inceleyin</p>
+          <h2>🛒 Sepetiniz boş</h2>
+          <p>🎁 En eğlenceli oyuncakları keşfetmek için alışverişe başlayın!</p>
           <Link to="/products" className="btn btn-primary">
-            Ürünleri İncele
+            🧸 Oyuncakları İncele 🎮
           </Link>
         </div>
       )}
