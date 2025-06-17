@@ -77,7 +77,8 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__DefaultConnection=Server=identitydb;Database=IdentityDb;User Id=sa;Password=SwN12345678;Encrypt=false;TrustServerCertificate=true;
     depends_on:
-      - identitydb
+      identitydb:
+        condition: service_healthy
     ports:
       - "6007:8080"
 
