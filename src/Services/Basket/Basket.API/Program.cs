@@ -62,6 +62,18 @@ builder.Services.AddHealthChecks()
 
 var app = builder.Build();
 
+// Initialize seed data in development
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var basketRepository = scope.ServiceProvider.GetRequiredService<IBasketRepository>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    // Wait a bit to ensure database is ready
+    await Task.Delay(2000);
+    await BasketSeedData.SeedAsync(basketRepository, logger);
+}
+
 // Configure the HTTP request pipeline.
 app.MapCarter();
 app.UseExceptionHandler(options => { });
