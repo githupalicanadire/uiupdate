@@ -2,7 +2,6 @@ using Discount.Grpc;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using BuildingBlocks.Messaging.MassTransit;
-using Basket.API.Data.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
 
