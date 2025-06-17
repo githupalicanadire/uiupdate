@@ -28,15 +28,37 @@ public static class SeedData
     {
         var configurationDbContext = serviceProvider.GetRequiredService<ConfigurationDbContext>();
 
-        // Seed Identity Resources
-        if (!await configurationDbContext.IdentityResources.AnyAsync())
+        // Ensure database is created and migrations are applied
+        await configurationDbContext.Database.EnsureCreatedAsync();
+
+        // Check if IdentityResources table exists and seed if empty
+        try
         {
-            Log.Information("🔑 Seeding identity resources...");
-            foreach (var resource in Config.IdentityResources)
+            if (!await configurationDbContext.IdentityResources.AnyAsync())
             {
-                await configurationDbContext.IdentityResources.AddAsync(resource.ToEntity());
+                Log.Information("🔑 Seeding identity resources...");
+                foreach (var resource in Config.IdentityResources)
+                {
+                    await configurationDbContext.IdentityResources.AddAsync(resource.ToEntity());
+                }
+                await configurationDbContext.SaveChangesAsync();
             }
-            await configurationDbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("⚠️ Error checking IdentityResources table: {Error}. Creating database schema...", ex.Message);
+            await configurationDbContext.Database.MigrateAsync();
+
+            // Retry seeding after migration
+            if (!await configurationDbContext.IdentityResources.AnyAsync())
+            {
+                Log.Information("🔑 Seeding identity resources after migration...");
+                foreach (var resource in Config.IdentityResources)
+                {
+                    await configurationDbContext.IdentityResources.AddAsync(resource.ToEntity());
+                }
+                await configurationDbContext.SaveChangesAsync();
+            }
         }
 
         // Seed API Scopes
