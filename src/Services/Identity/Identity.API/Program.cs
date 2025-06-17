@@ -128,16 +128,44 @@ async Task InitializeDatabase(WebApplication app)
 {
     using var serviceScope = app.Services.CreateScope();
 
-    // Migrate the database
-    var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await context.Database.MigrateAsync();
+    // Retry logic for database connection
+    var maxRetries = 30;
+    var retryDelay = TimeSpan.FromSeconds(2);
 
-    var persistedGrantDbContext = serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
-    await persistedGrantDbContext.Database.MigrateAsync();
+    for (int retry = 0; retry < maxRetries; retry++)
+    {
+        try
+        {
+            Log.Information("🔄 Attempting to connect to database (attempt {Retry}/{MaxRetries})", retry + 1, maxRetries);
 
-    var configurationDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-    await configurationDbContext.Database.MigrateAsync();
+            // Migrate the database
+            var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            await context.Database.MigrateAsync();
 
-    // Seed data
-    await SeedData.EnsureSeedData(serviceScope.ServiceProvider);
+            var persistedGrantDbContext = serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
+            await persistedGrantDbContext.Database.MigrateAsync();
+
+            var configurationDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+            await configurationDbContext.Database.MigrateAsync();
+
+            // Seed data
+            await SeedData.EnsureSeedData(serviceScope.ServiceProvider);
+
+            Log.Information("✅ Database initialization completed successfully");
+            return;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("⚠️ Database connection failed (attempt {Retry}/{MaxRetries}): {Error}",
+                retry + 1, maxRetries, ex.Message);
+
+            if (retry == maxRetries - 1)
+            {
+                Log.Error("❌ Failed to connect to database after {MaxRetries} attempts", maxRetries);
+                throw;
+            }
+
+            await Task.Delay(retryDelay);
+        }
+    }
 }
