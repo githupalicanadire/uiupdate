@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { basketService } from "../services/basketService";
+import { getCurrentUser } from "../config/userConfig";
 import "./CartPage.css";
 
 const CartPage = () => {
@@ -9,7 +10,7 @@ const CartPage = () => {
   const [error, setError] = useState(null);
 
   // For demo purposes, using a static username
-  const userName = "swn";
+  const userName = getCurrentUser();
 
   useEffect(() => {
     fetchBasket();
