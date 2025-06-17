@@ -24,7 +24,7 @@ const CheckoutPage = () => {
     expiration: "",
     cvv: "",
     paymentMethod: 1, // Credit Card
-    userName: "swn", // Demo user
+    userName: getCurrentUser(), // Demo user
   });
 
   const fetchBasket = async () => {
