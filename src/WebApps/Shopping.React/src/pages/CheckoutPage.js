@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { basketService } from "../services/basketService";
+import { getCurrentUser, getCurrentCustomerId } from "../config/userConfig";
 import "./CheckoutPage.css";
 
 const CheckoutPage = () => {
