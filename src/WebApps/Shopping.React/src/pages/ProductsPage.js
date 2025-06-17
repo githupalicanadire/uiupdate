@@ -1,35 +1,102 @@
 import React, { useState, useEffect } from "react";
 import { catalogService } from "../services/catalogService";
+import { basketService } from "../services/basketService";
 import "./ProductsPage.css";
+
+// Helper function to get category icons
+const getCategoryIcon = (category) => {
+  const iconMap = {
+    "Kutu Oyunları": "🎲",
+    "Müzik Aletleri": "🎵",
+    "Eğitici Oyuncaklar": "🧠",
+    "Peluş Oyuncaklar": "🧸",
+    "Oyuncak Arabalar": "🚗",
+    "Yapım Oyuncakları": "🧱",
+    "Oyuncak Bebekler ve Aksesuarları": "👶",
+  };
+  return iconMap[category] || "🎁";
+};
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(12);
+  const [totalCount, setTotalCount] = useState(0);
+  const [addingToCart, setAddingToCart] = useState({});
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     fetchProducts();
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentPage, selectedCategory]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchCategories = async () => {
+    try {
+      const response = await catalogService.getCategories();
+      setCategories(response.data || []);
+    } catch (err) {
+      console.error("Categories fetch error:", err);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await catalogService.getProducts(currentPage, pageSize);
-      setProducts(response.data || []);
+
+      let response;
+      if (selectedCategory) {
+        response = await catalogService.getProductsByCategory(selectedCategory);
+        setProducts(response.data || []);
+        setTotalCount(response.data?.length || 0);
+      } else {
+        response = await catalogService.getProducts(currentPage, pageSize);
+        setProducts(response.data || []);
+        setTotalCount(response.totalCount || 0);
+      }
     } catch (err) {
       setError(err.message);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const addToCart = (product) => {
-    // This would integrate with basket service
-    console.log("Adding to cart:", product);
-    alert(`🎉 ${product.name} sepetinize eklendi! 🛒`);
+  const addToCart = async (product) => {
+    try {
+      setAddingToCart((prev) => ({ ...prev, [product.id]: true }));
+
+      const userName = "swn"; // Demo user
+
+      const item = {
+        productId: product.id,
+        productName: product.name,
+        unitPrice: product.price,
+        quantity: 1,
+        color: "Default",
+      };
+
+      await basketService.addItemToBasket(userName, item);
+
+      // Başarı mesajı göster
+      alert(`🎉 ${product.name} sepetinize eklendi! 🛒`);
+    } catch (error) {
+      console.error("Add to cart error:", error);
+      alert(`😔 Ürün sepete eklenirken hata oluştu: ${error.message}`);
+    } finally {
+      setAddingToCart((prev) => ({ ...prev, [product.id]: false }));
+    }
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setCurrentPage(1); // Reset to first page when changing category
   };
 
   if (loading) {
@@ -49,6 +116,39 @@ const ProductsPage = () => {
       <div className="page-header">
         <h1>🎁 Oyuncak Dünyamız 🌟</h1>
         <p>🧸 Hayal ettiğiniz her oyuncak burada! 🎮</p>
+
+        {/* Category Filter */}
+        <div className="category-filter">
+          <button
+            className={`category-btn ${selectedCategory === "" ? "active" : ""}`}
+            onClick={() => handleCategoryChange("")}
+          >
+            🌟 Tümü
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category}
+              className={`category-btn ${selectedCategory === category ? "active" : ""}`}
+              onClick={() => handleCategoryChange(category)}
+            >
+              {getCategoryIcon(category)} {category}
+            </button>
+          ))}
+        </div>
+
+        {selectedCategory && (
+          <div className="active-filter">
+            <span>
+              Kategori: <strong>{selectedCategory}</strong>
+            </span>
+            <button
+              onClick={() => handleCategoryChange("")}
+              className="clear-filter"
+            >
+              ✕ Temizle
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="products-grid">
@@ -76,8 +176,11 @@ const ProductsPage = () => {
                   <button
                     className="btn btn-primary add-to-cart-btn"
                     onClick={() => addToCart(product)}
+                    disabled={addingToCart[product.id]}
                   >
-                    🛒 Sepete At!
+                    {addingToCart[product.id]
+                      ? "⏳ Ekleniyor..."
+                      : "🛒 Sepete At!"}
                   </button>
                 </div>
               </div>
@@ -90,23 +193,36 @@ const ProductsPage = () => {
         )}
       </div>
 
-      <div className="pagination">
-        <button
-          className="btn btn-secondary"
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          ⬅️ Önceki
-        </button>
-        <span className="page-info">📄 Sayfa {currentPage}</span>
-        <button
-          className="btn btn-secondary"
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={products.length < pageSize}
-        >
-          Sonraki ➡️
-        </button>
-      </div>
+      {!selectedCategory && products.length > 0 && (
+        <div className="pagination">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            ⬅️ Önceki
+          </button>
+          <span className="page-info">
+            📄 Sayfa {currentPage} ({totalCount} oyuncak)
+          </span>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            disabled={products.length < pageSize}
+          >
+            Sonraki ➡️
+          </button>
+        </div>
+      )}
+
+      {selectedCategory && products.length > 0 && (
+        <div className="category-results">
+          <p>
+            🎯 <strong>{selectedCategory}</strong> kategorisinde{" "}
+            {products.length} oyuncak bulundu
+          </p>
+        </div>
+      )}
     </div>
   );
 };
