@@ -37,17 +37,19 @@ public static class OrderingSeedData
             new { UserName = "maria", CustomerId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afaf") }
         };
 
-        // Sample products (these should match Catalog service products)
+        // Sample products (matching Catalog service toy products)
         var sampleProducts = new[]
         {
-            new { Id = Guid.Parse("5334c996-8457-4cf0-815c-ed2b77c4ff61"), Name = "🧸 Teddy Bear", Price = 29.99m },
-            new { Id = Guid.Parse("c67d6323-e8b1-4bdf-9a75-b0d0d2e7e914"), Name = "🚗 Racing Car", Price = 24.99m },
-            new { Id = Guid.Parse("4f136e9f-ff8c-4c1f-9a33-d12f689bdab8"), Name = "🎨 Art Set", Price = 39.99m },
-            new { Id = Guid.Parse("6ec1297b-ec0a-4aa1-be25-6726e3b51a27"), Name = "🧩 Puzzle Game", Price = 19.99m },
-            new { Id = Guid.Parse("b786103d-c621-4f5a-b498-23452610f88c"), Name = "🚀 Space Rocket", Price = 34.99m },
-            new { Id = Guid.Parse("f5c6e7d8-a9b0-1c2d-3e4f-567890abcdef"), Name = "🎲 Board Game", Price = 27.99m },
-            new { Id = Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890"), Name = "🏗️ Building Blocks", Price = 44.99m },
-            new { Id = Guid.Parse("1a2b3c4d-5e6f-7890-abcd-ef1234567891"), Name = "🎪 Magic Set", Price = 32.99m }
+            new { Id = Guid.Parse("5334c996-8457-4cf0-815c-ed2b77c4ff61"), Name = "Squid Game 5 Taş Oyunu", Price = 149.99m },
+            new { Id = Guid.Parse("c67d6323-e8b0-4bdd-a7e6-a593eb6068e8"), Name = "Smile Games Günün Sorusu Kutu Oyunu", Price = 274.99m },
+            new { Id = Guid.Parse("4f136e07-cc90-4d8b-b847-68c0a3331d79"), Name = "Smile Games Matematik Oyunu", Price = 589.99m },
+            new { Id = Guid.Parse("6ec1297b-ec0a-4aa1-be25-6726e3b51a27"), Name = "UNO Reverse Pack Eklenti Paketi", Price = 119.99m },
+            new { Id = Guid.Parse("b786103d-c621-4f5a-b498-23312a3fa792"), Name = "UNO Stack Pack Eklenti Paketi", Price = 119.99m },
+            new { Id = Guid.Parse("9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f"), Name = "Bontempi Işıklı Mikrofonlu Elektronik Tabureli Org", Price = 2699.00m },
+            new { Id = Guid.Parse("f24d3e2f-1a0b-9c8d-7e6f-5a4b3c2d1e0f"), Name = "Fisher Price Matematikçi Timsah", Price = 1399.99m },
+            new { Id = Guid.Parse("2570a6b5-4c3d-2e1f-0a9b-8c7d6e5f4a3b"), Name = "Sesli Disney Stitch Real Fx Elektronik Kukla 30 cm", Price = 4289.99m },
+            new { Id = Guid.Parse("58a3d9e8-7f6a-5b4c-3d2e-1f0a9b8c7d6e"), Name = "1:64 Hot Wheels The Hot Ones Fiat 500 Topolino (1936)", Price = 249.99m },
+            new { Id = Guid.Parse("8bd60c1b-ac9d-8e7f-6a5b-4c3d2e1f0a9b"), Name = "LEGO Disney Walt Disney Hatırası Kamera", Price = 3699.00m }
         };
 
         var random = new Random(42); // Fixed seed for consistent results
@@ -57,7 +59,7 @@ public static class OrderingSeedData
         {
             // Each customer gets 1-3 orders
             var orderCount = random.Next(1, 4);
-            
+
             for (int i = 0; i < orderCount; i++)
             {
                 var orderId = OrderId.Of(Guid.NewGuid());
@@ -100,14 +102,14 @@ public static class OrderingSeedData
                 {
                     var quantity = random.Next(1, 4);
                     var productId = ProductId.Of(product.Id);
-                    
+
                     order.Add(productId, quantity, product.Price);
                 }
 
                 // Set random order status
                 var statuses = new[] { OrderStatus.Pending, OrderStatus.Completed, OrderStatus.Cancelled };
                 var randomStatus = statuses[random.Next(statuses.Length)];
-                
+
                 // Use reflection to set the status (since it might be private set)
                 var statusProperty = typeof(Order).GetProperty(nameof(Order.Status));
                 statusProperty?.SetValue(order, randomStatus);
@@ -115,7 +117,7 @@ public static class OrderingSeedData
                 // Set creation date in the past (last 30 days)
                 var createdDaysAgo = random.Next(0, 30);
                 var createdAt = DateTime.UtcNow.AddDays(-createdDaysAgo);
-                
+
                 // Use reflection to set created date
                 var createdAtProperty = typeof(Order).GetProperty("CreatedAt") ?? typeof(Order).GetProperty("Created");
                 if (createdAtProperty != null && createdAtProperty.CanWrite)
@@ -130,8 +132,8 @@ public static class OrderingSeedData
 
         context.Orders.AddRange(orders);
         await context.SaveChangesAsync();
-        
-        logger.LogInformation("✅ Created {OrderCount} sample orders for {CustomerCount} customers", 
+
+        logger.LogInformation("✅ Created {OrderCount} sample orders for {CustomerCount} customers",
             orders.Count, customers.Length);
     }
 }
