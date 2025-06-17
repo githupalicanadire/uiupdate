@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
       delete api.defaults.headers.common["Authorization"];
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const verifyToken = async () => {
