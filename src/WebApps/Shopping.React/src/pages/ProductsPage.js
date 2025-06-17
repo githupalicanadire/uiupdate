@@ -11,7 +11,7 @@ const ProductsPage = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [currentPage]);
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchProducts = async () => {
     try {
