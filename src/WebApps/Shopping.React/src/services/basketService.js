@@ -7,7 +7,8 @@ export const basketService = {
       console.log(`🛒 Fetching basket for user: ${userName}`);
       const response = await api.get(`/basket-service/basket/${userName}`);
 
-      const basket = response.data;
+      // Backend GetBasketResponse formatında { cart: ShoppingCart } döner
+      const basket = response.data.cart || response.data;
 
       // Backend'den gelen basket formatını normalize et
       return {
