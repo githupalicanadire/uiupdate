@@ -98,14 +98,21 @@ public static class SeedData
         }
 
         // Seed Clients
-        if (!await configurationDbContext.Clients.AnyAsync())
+        try
         {
-            Log.Information("👥 Seeding clients...");
-            foreach (var client in Config.Clients)
+            if (!await configurationDbContext.Clients.AnyAsync())
             {
-                await configurationDbContext.Clients.AddAsync(client.ToEntity());
+                Log.Information("👥 Seeding clients...");
+                foreach (var client in Config.Clients)
+                {
+                    await configurationDbContext.Clients.AddAsync(client.ToEntity());
+                }
+                await configurationDbContext.SaveChangesAsync();
             }
-            await configurationDbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("⚠️ Error seeding clients: {Error}", ex.Message);
         }
     }
 
