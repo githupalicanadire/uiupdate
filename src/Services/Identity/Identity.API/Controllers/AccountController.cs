@@ -84,16 +84,25 @@ public class AccountController : ControllerBase
         user.LastLoginAt = DateTime.UtcNow;
         await _userManager.UpdateAsync(user);
 
+        // Get user claims
+        var userClaims = await _userManager.GetClaimsAsync(user);
+
+        // Generate JWT token
+        var token = GenerateJwtToken(user, userClaims);
+
         _logger.LogInformation("User {Username} logged in successfully", request.Username);
 
         return Ok(new
         {
             message = "Login successful",
+            token = token,
             user = new
             {
                 id = user.Id,
                 username = user.UserName,
                 email = user.Email,
+                firstName = user.FirstName,
+                lastName = user.LastName,
                 fullName = user.FullName
             }
         });
