@@ -71,16 +71,6 @@ services:
     restart: always
     ports:
       - "1434:1433"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P SwN12345678 -Q 'SELECT 1' || exit 1",
-        ]
-      interval: 15s
-      timeout: 10s
-      retries: 20
-      start_period: 180s
 
   identity.api:
     container_name: identity.api
