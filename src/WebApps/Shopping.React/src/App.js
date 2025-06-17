@@ -9,6 +9,7 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
 import ConfirmationPage from "./pages/ConfirmationPage";
+import DebugPage from "./pages/DebugPage";
 
 function App() {
   return (
