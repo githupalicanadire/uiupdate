@@ -138,16 +138,20 @@ async Task InitializeDatabase(WebApplication app)
         {
             Log.Information("🔄 Attempting to connect to database (attempt {Retry}/{MaxRetries})", retry + 1, maxRetries);
 
-            // Migrate the database
+            // Migrate the databases in correct order
+            Log.Information("📊 Migrating ApplicationDbContext...");
             var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             await context.Database.MigrateAsync();
 
+            Log.Information("📊 Migrating PersistedGrantDbContext...");
             var persistedGrantDbContext = serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
             await persistedGrantDbContext.Database.MigrateAsync();
 
+            Log.Information("📊 Migrating ConfigurationDbContext...");
             var configurationDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
             await configurationDbContext.Database.MigrateAsync();
 
+            Log.Information("🌱 Starting data seeding...");
             // Seed data
             await SeedData.EnsureSeedData(serviceScope.ServiceProvider);
 
