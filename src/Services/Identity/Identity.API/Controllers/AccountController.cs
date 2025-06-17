@@ -16,15 +16,50 @@ public class AccountController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ILogger<AccountController> _logger;
+    private readonly IConfiguration _configuration;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        ILogger<AccountController> logger)
+        ILogger<AccountController> logger,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _logger = logger;
+        _configuration = configuration;
+    }
+
+    private string GenerateJwtToken(ApplicationUser user, IList<Claim> claims)
+    {
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            jwtSettings["SecretKey"] ?? "YourSuperSecretKeyThatIsAtLeast256BitsLong!"));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var tokenClaims = new List<Claim>
+        {
+            new("jti", Guid.NewGuid().ToString()),
+            new("sub", user.Id),
+            new("username", user.UserName ?? ""),
+            new("email", user.Email ?? ""),
+            new("given_name", user.FirstName),
+            new("family_name", user.LastName),
+            new("name", user.FullName)
+        };
+
+        // Add user claims
+        tokenClaims.AddRange(claims);
+
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"] ?? "https://localhost:6007",
+            audience: jwtSettings["Audience"] ?? "shopping-spa",
+            claims: tokenClaims,
+            expires: DateTime.UtcNow.AddMinutes(int.Parse(jwtSettings["ExpirationMinutes"] ?? "60")),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     [HttpPost("login")]
