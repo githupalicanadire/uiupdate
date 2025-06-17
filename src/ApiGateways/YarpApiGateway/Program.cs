@@ -51,6 +51,11 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseCors("CorsPolicy");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseRateLimiter();
 
 app.MapReverseProxy();
