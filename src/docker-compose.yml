@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   catalogdb:
@@ -52,12 +52,12 @@ services:
       context: .
       dockerfile: WebApps/Shopping.Web/Dockerfile
 
+  shopping.react:
+    image: ${DOCKER_REGISTRY-}shoppingreact
+    build:
+      context: .
+      dockerfile: WebApps/Shopping.React/Dockerfile
+
 volumes:
   postgres_catalog:
   postgres_basket:
-
-
-
-
-
-
