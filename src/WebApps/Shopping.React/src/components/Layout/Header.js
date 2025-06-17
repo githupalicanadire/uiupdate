@@ -23,6 +23,11 @@ const Header = () => {
             <Link to="/orders" className="nav-link">
               📦 Siparişlerim
             </Link>
+            {process.env.NODE_ENV === "development" && (
+              <Link to="/debug" className="nav-link debug-link">
+                🔧 Debug
+              </Link>
+            )}
           </nav>
         </div>
       </div>
