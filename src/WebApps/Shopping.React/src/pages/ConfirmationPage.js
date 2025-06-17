@@ -25,25 +25,25 @@ const ConfirmationPage = () => {
           </svg>
         </div>
 
-        <h1>Sipariş Başarıyla Verildi!</h1>
+        <h1>🎉 Oyuncağınız Sipariş Edildi! 🎁</h1>
         <p className="confirmation-message">
-          Siparişiniz başarıyla alınmış ve işleme konmuştur. Sipariş durumunuzu
-          e-posta adresinizden takip edebilirsiniz.
+          🚀 Harika! Oyuncak siparişiniz başarıyla alındı ve hazırlanıyor. 🎊
+          Oyuncağınızın durumunu e-posta adresinizden takip edebilirsiniz.
         </p>
 
         <div className="confirmation-details">
           <div className="detail-item">
-            <strong>Sipariş Numarası:</strong>
+            <strong>🎫 Sipariş Numarası:</strong>
             <span>
               #{Math.random().toString(36).substr(2, 9).toUpperCase()}
             </span>
           </div>
           <div className="detail-item">
-            <strong>Sipariş Tarihi:</strong>
+            <strong>📅 Sipariş Tarihi:</strong>
             <span>{new Date().toLocaleDateString("tr-TR")}</span>
           </div>
           <div className="detail-item">
-            <strong>Tahmini Teslimat:</strong>
+            <strong>🚚 Tahmini Teslimat:</strong>
             <span>
               {new Date(
                 Date.now() + 7 * 24 * 60 * 60 * 1000,
@@ -54,10 +54,10 @@ const ConfirmationPage = () => {
 
         <div className="confirmation-actions">
           <Link to="/orders" className="btn btn-primary">
-            Siparişlerimi Görüntüle
+            📦 Siparişlerimi Görüntüle
           </Link>
           <Link to="/products" className="btn btn-secondary">
-            Alışverişe Devam Et
+            🧸 Alışverişe Devam Et 🎮
           </Link>
         </div>
       </div>
