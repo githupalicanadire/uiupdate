@@ -40,4 +40,54 @@ app.UseHealthChecks("/health",
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
 
+// Initialize database in development
+if (app.Environment.IsDevelopment())
+{
+    await InitializeDatabaseAsync(app);
+}
+
 app.Run();
+
+async Task InitializeDatabaseAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    // Retry logic for database connection
+    var maxRetries = 30;
+    var retryDelay = TimeSpan.FromSeconds(2);
+
+    for (int retry = 0; retry < maxRetries; retry++)
+    {
+        try
+        {
+            logger.LogInformation("🔄 Attempting to connect to Catalog PostgreSQL (attempt {Retry}/{MaxRetries})", retry + 1, maxRetries);
+
+            // Initialize Marten with seed data
+            var documentStore = scope.ServiceProvider.GetRequiredService<IDocumentStore>();
+
+            // Ensure database exists and apply schema
+            await documentStore.Storage.ApplyAllConfiguredChangesToDatabaseAsync();
+
+            // Seed data
+            var seedData = new CatalogInitialData();
+            await seedData.Populate(documentStore, CancellationToken.None);
+
+            logger.LogInformation("✅ Catalog database initialization completed successfully");
+            return;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("⚠️ Catalog database connection failed (attempt {Retry}/{MaxRetries}): {Error}",
+                retry + 1, maxRetries, ex.Message);
+
+            if (retry == maxRetries - 1)
+            {
+                logger.LogError("❌ Failed to connect to Catalog PostgreSQL after {MaxRetries} attempts", maxRetries);
+                throw;
+            }
+
+            await Task.Delay(retryDelay);
+        }
+    }
+}
