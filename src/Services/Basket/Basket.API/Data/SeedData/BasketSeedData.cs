@@ -87,11 +87,11 @@ public static class BasketSeedData
                 {
                     new ShoppingCartItem
                     {
-                        ProductId = Guid.Parse("f5c6e7d8-a9b0-1c2d-3e4f-567890abcdef"),
-                        ProductName = "🎲 Board Game",
-                        Price = 27.99m,
-                        Quantity = 2,
-                        Color = "Default"
+                        ProductId = Guid.Parse("f24d3e2f-1a0b-9c8d-7e6f-5a4b3c2d1e0f"),
+                        ProductName = "Fisher Price Matematikçi Timsah",
+                        Price = 1399.99m,
+                        Quantity = 1,
+                        Color = "Green"
                     }
                 }
             },
