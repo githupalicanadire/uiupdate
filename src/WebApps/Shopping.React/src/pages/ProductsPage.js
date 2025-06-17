@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { catalogService } from "../services/catalogService";
 import { basketService } from "../services/basketService";
-import { getCurrentUser } from "../config/userConfig";
+import { useAuth } from "../contexts/AuthContext";
 import "./ProductsPage.css";
 
 // Helper function to get category icons
