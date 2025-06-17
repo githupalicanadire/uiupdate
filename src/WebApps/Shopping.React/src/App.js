@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Layout/Header";
 import Footer from "./components/Layout/Footer";
 import HomePage from "./pages/HomePage";
@@ -9,25 +11,82 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
 import ConfirmationPage from "./pages/ConfirmationPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import DebugPage from "./pages/DebugPage";
 
 function App() {
   return (
-    <div className="app">
-      <Header />
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/confirmation" element={<ConfirmationPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/debug" element={<DebugPage />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <AuthProvider>
+      <div className="app">
+        <Header />
+        <main className="main-content">
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/products" element={<ProductsPage />} />
+
+            {/* Auth routes - only for non-authenticated users */}
+            <Route
+              path="/login"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <LoginPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <RegisterPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Protected routes - require authentication */}
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute>
+                  <CartPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute>
+                  <CheckoutPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/confirmation"
+              element={
+                <ProtectedRoute>
+                  <ConfirmationPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <OrdersPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Debug route - development only */}
+            {process.env.NODE_ENV === "development" && (
+              <Route path="/debug" element={<DebugPage />} />
+            )}
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </AuthProvider>
   );
 }
 
