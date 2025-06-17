@@ -62,7 +62,7 @@ builder.Services.AddHealthChecks()
 
 var app = builder.Build();
 
-// Initialize database and seed data in development
+// Initialize database in development (no seed data for baskets - users create their own)
 if (app.Environment.IsDevelopment())
 {
     await InitializeDatabaseAsync(app);
@@ -88,15 +88,10 @@ async Task InitializeDatabaseAsync(WebApplication app)
             using var session = documentStore.LightweightSession();
 
             // Ensure database exists and is migrated
-            await documentStore.Advanced.Clean.CompletelyRemoveAllAsync();
             await documentStore.Storage.ApplyAllConfiguredChangesToDatabaseAsync();
 
-            logger.LogInformation("✅ PostgreSQL connection successful, seeding basket data...");
-
-            var basketRepository = scope.ServiceProvider.GetRequiredService<IBasketRepository>();
-            await BasketSeedData.SeedAsync(basketRepository, logger);
-
             logger.LogInformation("✅ Basket database initialization completed successfully");
+            logger.LogInformation("ℹ️ No seed data for baskets - users will create their own shopping carts");
             return;
         }
         catch (Exception ex)
