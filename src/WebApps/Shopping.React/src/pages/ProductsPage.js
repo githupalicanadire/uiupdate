@@ -29,6 +29,8 @@ const ProductsPage = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [addingToCart, setAddingToCart] = useState({});
 
+  const { getCurrentUser, isAuthenticated } = useAuth();
+
   useEffect(() => {
     fetchCategories();
   }, []);
