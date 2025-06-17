@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
         password,
       });
 
-      if (response.data.token) {
+      if (response.data && response.data.token) {
         const { token: newToken, user: userData } = response.data;
 
         // Store token
@@ -63,7 +63,10 @@ export const AuthProvider = ({ children }) => {
         console.log("✅ Login successful:", userData);
         return { success: true };
       } else {
-        return { success: false, message: "Login başarısız" };
+        return {
+          success: false,
+          message: response.data?.message || "Login başarısız",
+        };
       }
     } catch (error) {
       console.error("❌ Login error:", error);
