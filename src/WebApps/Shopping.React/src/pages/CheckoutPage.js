@@ -138,7 +138,12 @@ const CheckoutPage = () => {
     }
   };
 
-  if (basketLoading) {
+  useEffect(() => {
+    fetchBasket();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
     return <div className="loading">🛒 Sepet bilgileri yükleniyor... ✨</div>;
   }
 
