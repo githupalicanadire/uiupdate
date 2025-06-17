@@ -69,10 +69,10 @@ public static class OrderingSeedData
                 // Random shipping address
                 var addresses = new[]
                 {
-                    Address.Of($"{customer.UserName}", "Main Street", "123", "USA", "NY", "10001"),
-                    Address.Of($"{customer.UserName}", "Oak Avenue", "456", "USA", "CA", "90210"),
-                    Address.Of($"{customer.UserName}", "Pine Road", "789", "USA", "TX", "73301"),
-                    Address.Of($"{customer.UserName}", "Elm Street", "321", "USA", "FL", "33101")
+                    Address.Of($"{customer.UserName}", "User", $"{customer.UserName}@shopping.com", "Main Street 123", "Turkey", "Istanbul", "34000"),
+                    Address.Of($"{customer.UserName}", "User", $"{customer.UserName}@shopping.com", "Oak Avenue 456", "Turkey", "Ankara", "06000"),
+                    Address.Of($"{customer.UserName}", "User", $"{customer.UserName}@shopping.com", "Pine Road 789", "Turkey", "Izmir", "35000"),
+                    Address.Of($"{customer.UserName}", "User", $"{customer.UserName}@shopping.com", "Elm Street 321", "Turkey", "Bursa", "16000")
                 };
                 var shippingAddress = addresses[random.Next(addresses.Length)];
 
