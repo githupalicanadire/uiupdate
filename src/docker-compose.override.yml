@@ -126,10 +126,14 @@ services:
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
     depends_on:
-      - basketdb
-      - distributedcache
-      - discount.grpc
-      - messagebroker
+      basketdb:
+        condition: service_healthy
+      distributedcache:
+        condition: service_started
+      discount.grpc:
+        condition: service_started
+      messagebroker:
+        condition: service_started
     ports:
       - "6001:8080"
 
