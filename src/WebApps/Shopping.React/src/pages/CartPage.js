@@ -20,8 +20,10 @@ const CartPage = () => {
       setLoading(true);
       setError(null);
       const response = await basketService.getBasket(userName);
+      console.log("🛒 Fetched basket:", response);
       setBasket(response);
     } catch (err) {
+      console.error("❌ Basket fetch error:", err);
       setError(err.message);
       // Initialize empty basket if not found
       setBasket({
@@ -40,58 +42,87 @@ const CartPage = () => {
       return;
     }
 
-    const updatedItems = basket.items.map((item) =>
-      item.productId === productId
-        ? {
-            ...item,
-            quantity: newQuantity,
-            price: item.unitPrice * newQuantity,
-          }
-        : item,
-    );
-
-    const updatedBasket = {
-      ...basket,
-      items: updatedItems,
-      totalPrice: updatedItems.reduce((sum, item) => sum + item.price, 0),
-    };
-
     try {
+      const currentItem = basket.items.find(
+        (item) => item.productId === productId,
+      );
+      if (!currentItem) return;
+
+      const unitPrice = currentItem.price / currentItem.quantity;
+
+      const updatedItems = basket.items.map((item) =>
+        item.productId === productId
+          ? { ...item, quantity: newQuantity, price: unitPrice * newQuantity }
+          : item,
+      );
+
+      const updatedBasket = {
+        ...basket,
+        items: updatedItems,
+        totalPrice: updatedItems.reduce((sum, item) => sum + item.price, 0),
+      };
+
+      console.log("🔄 Updating basket quantity:", updatedBasket);
       await basketService.storeBasket(updatedBasket);
       setBasket(updatedBasket);
+      setError(null); // Clear any previous errors
     } catch (err) {
-      setError(err.message);
+      console.error("❌ Update quantity error:", err);
+      setError(`Miktar güncellenirken hata: ${err.message}`);
     }
   };
 
   const removeItem = async (productId) => {
-    const updatedItems = basket.items.filter(
-      (item) => item.productId !== productId,
-    );
-    const updatedBasket = {
-      ...basket,
-      items: updatedItems,
-      totalPrice: updatedItems.reduce((sum, item) => sum + item.price, 0),
-    };
+    if (
+      !window.confirm(
+        "Bu ürünü sepetinizden kaldırmak istediğinizden emin misiniz?",
+      )
+    ) {
+      return;
+    }
 
     try {
+      const updatedItems = basket.items.filter(
+        (item) => item.productId !== productId,
+      );
+      const updatedBasket = {
+        ...basket,
+        items: updatedItems,
+        totalPrice: updatedItems.reduce((sum, item) => sum + item.price, 0),
+      };
+
+      console.log("🗑️ Removing item from basket:", productId);
       await basketService.storeBasket(updatedBasket);
       setBasket(updatedBasket);
+      setError(null);
     } catch (err) {
-      setError(err.message);
+      console.error("❌ Remove item error:", err);
+      setError(`Ürün kaldırılırken hata: ${err.message}`);
     }
   };
 
   const clearBasket = async () => {
+    if (
+      !window.confirm(
+        "Sepetinizdeki tüm ürünleri kaldırmak istediğinizden emin misiniz?",
+      )
+    ) {
+      return;
+    }
+
     try {
+      console.log("🧹 Clearing basket for user:", userName);
       await basketService.deleteBasket(userName);
       setBasket({
         userName: userName,
         items: [],
         totalPrice: 0,
       });
+      setError(null);
+      alert("🧹 Sepetiniz temizlendi!");
     } catch (err) {
-      setError(err.message);
+      console.error("❌ Clear basket error:", err);
+      setError(`Sepet temizlenirken hata: ${err.message}`);
     }
   };
 
@@ -121,7 +152,8 @@ const CartPage = () => {
                   <p className="item-color">Renk: {item.color}</p>
                 </div>
                 <div className="item-price">
-                  <span>${item.unitPrice}</span>
+                  <span>${(item.price / item.quantity).toFixed(2)}</span>
+                  <small>birim fiyat</small>
                 </div>
                 <div className="item-quantity">
                   <button
@@ -143,7 +175,8 @@ const CartPage = () => {
                   </button>
                 </div>
                 <div className="item-total">
-                  <span>${item.price}</span>
+                  <span>${item.price.toFixed(2)}</span>
+                  <small>toplam</small>
                 </div>
                 <div className="item-actions">
                   <button
