@@ -37,16 +37,18 @@ export const basketService = {
     try {
       console.log("💾 Storing basket:", basket);
 
-      // Backend'in beklediği format
+      // Backend'in beklediği StoreBasketRequest format
       const basketData = {
-        userName: basket.userName,
-        items: basket.items.map((item) => ({
-          quantity: item.quantity,
-          color: item.color || "Default",
-          price: item.price,
-          productId: item.productId,
-          productName: item.productName,
-        })),
+        cart: {
+          userName: basket.userName,
+          items: basket.items.map((item) => ({
+            quantity: item.quantity,
+            color: item.color || "Default",
+            price: item.price,
+            productId: item.productId,
+            productName: item.productName,
+          })),
+        },
       };
 
       const response = await api.post("/basket-service/basket", basketData);
