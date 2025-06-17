@@ -124,9 +124,12 @@ services:
       - "6005:8080"
 
   shopping.react:
+    container_name: shopping.react
     environment:
       - NODE_ENV=production
+      - REACT_APP_API_URL=http://yarpapigateway:8080
     depends_on:
       - yarpapigateway
     ports:
       - "6006:80"
+    restart: always
