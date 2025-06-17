@@ -6,8 +6,11 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
-          <p>&copy; 2024 E-Shop Microservices. Tüm hakları saklıdır.</p>
-          <p>React Frontend ile güçlendirilmiştir.</p>
+          <p>
+            🎈 &copy; 2024 ToyLand - Hayal gücünüzün sınırı olmadığı yer! 🌈
+          </p>
+          <p>✨ En kaliteli oyuncaklar, en mutlu çocuklar için! 🎭</p>
+          <p>📱 React ile sevgiyle kodlanmıştır 💝</p>
         </div>
       </div>
     </footer>
