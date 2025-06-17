@@ -51,6 +51,26 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  identitydb:
+    container_name: identitydb
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=SwN12345678
+    restart: always
+    ports:
+      - "1434:1433"
+
+  identity.api:
+    container_name: identity.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Server=identitydb;Database=IdentityDb;User Id=sa;Password=SwN12345678;Encrypt=false;TrustServerCertificate=true;
+    depends_on:
+      - identitydb
+    ports:
+      - "6007:8080"
+
   catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
