@@ -72,18 +72,22 @@ const OrdersPage = () => {
   };
 
   if (loading) {
-    return <div className="loading">Siparişler yükleniyor...</div>;
+    return <div className="loading">📦 Siparişleriniz yükleniyor... ✨</div>;
   }
 
   if (error) {
-    return <div className="error">Hata: {error}</div>;
+    return (
+      <div className="error">
+        😔 Siparişler yüklenirken sorun oluştu: {error}
+      </div>
+    );
   }
 
   return (
     <div className="orders-page">
       <div className="page-header">
-        <h1>Siparişlerim</h1>
-        <p>Geçmiş siparişlerinizi görüntüleyebilirsiniz</p>
+        <h1>📦 Oyuncak Siparişlerim 🎁</h1>
+        <p>🚀 Tüm oyuncak siparişlerinizi burada takip edebilirsiniz!</p>
       </div>
 
       {orders.length > 0 ? (
@@ -107,7 +111,7 @@ const OrdersPage = () => {
 
               <div className="order-details">
                 <div className="customer-info">
-                  <h4>Müşteri Bilgileri</h4>
+                  <h4>👤 Müşteri Bilgileri</h4>
                   <p>
                     <strong>Ad:</strong> {order.shippingAddress?.firstName}{" "}
                     {order.shippingAddress?.lastName}
@@ -125,7 +129,7 @@ const OrdersPage = () => {
 
                 {order.orderItems && order.orderItems.length > 0 && (
                   <div className="order-items">
-                    <h4>Sipariş Kalemleri</h4>
+                    <h4>🧸 Oyuncaklar</h4>
                     <div className="items-list">
                       {order.orderItems.map((item, index) => (
                         <div key={index} className="order-item">
@@ -149,10 +153,10 @@ const OrdersPage = () => {
         </div>
       ) : (
         <div className="no-orders">
-          <h2>Henüz sipariş verilmemiş</h2>
-          <p>İlk siparişinizi vermek için alışverişe başlayın</p>
+          <h2>📦 Henüz oyuncak siparişi yok</h2>
+          <p>🎁 İlk oyuncağınızı sipariş etmek için keşfetmeye başlayın!</p>
           <a href="/products" className="btn btn-primary">
-            Ürünleri İncele
+            🧸 Oyuncakları Keşfet 🎮
           </a>
         </div>
       )}
@@ -164,15 +168,15 @@ const OrdersPage = () => {
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
-            Önceki
+            ⬅️ Önceki
           </button>
-          <span className="page-info">Sayfa {currentPage}</span>
+          <span className="page-info">📄 Sayfa {currentPage}</span>
           <button
             className="btn btn-secondary"
             onClick={() => setCurrentPage((prev) => prev + 1)}
             disabled={orders.length < pageSize}
           >
-            Sonraki
+            Sonraki ➡️
           </button>
         </div>
       )}
