@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { basketService } from "../services/basketService";
+import { useAuth } from "../contexts/AuthContext";
 import "./CheckoutPage.css";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { getCurrentUser, getCurrentCustomerId, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [basket, setBasket] = useState(null);
@@ -23,12 +25,8 @@ const CheckoutPage = () => {
     expiration: "",
     cvv: "",
     paymentMethod: 1, // Credit Card
-    userName: "swn", // Demo user
+    userName: getCurrentUser(),
   });
-
-  useEffect(() => {
-    fetchBasket();
-  }, []);
 
   const fetchBasket = async () => {
     try {
@@ -96,7 +94,10 @@ const CheckoutPage = () => {
 
       const basketCheckout = {
         userName: formData.userName,
-        customerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6", // Demo customer ID
+        customerId:
+          getCurrentCustomerId() ||
+          user?.id ||
+          "00000000-0000-0000-0000-000000000000",
         totalPrice: basket.totalPrice,
 
         // Shipping & Billing Address
@@ -141,6 +142,11 @@ const CheckoutPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchBasket();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (basketLoading) {
     return <div className="loading">🛒 Sepet bilgileri yükleniyor... ✨</div>;

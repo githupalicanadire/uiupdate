@@ -20,6 +20,13 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     console.log(`Making request to: ${config.url}`);
+
+    // Add JWT token if available
+    const token = localStorage.getItem("shopping_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
   },
   (error) => {
@@ -63,7 +70,16 @@ api.interceptors.response.use(
           errorMessage = "Geçersiz istek";
           break;
         case 401:
-          errorMessage = "Yetki hatası";
+          errorMessage = "Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.";
+          // Token expired, clear local storage
+          localStorage.removeItem("shopping_token");
+          // Redirect to login if not already there
+          if (!window.location.pathname.includes("/login")) {
+            window.location.href = "/login";
+          }
+          break;
+        case 403:
+          errorMessage = "Bu işlem için yetkiniz yok";
           break;
         case 404:
           errorMessage = "İstenen kaynak bulunamadı";

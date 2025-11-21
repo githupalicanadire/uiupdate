@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { catalogService } from "../services/catalogService";
 import { basketService } from "../services/basketService";
+import { useAuth } from "../contexts/AuthContext";
 import "./ProductsPage.css";
 
 // Helper function to get category icons
@@ -27,6 +28,8 @@ const ProductsPage = () => {
   const [pageSize] = useState(12);
   const [totalCount, setTotalCount] = useState(0);
   const [addingToCart, setAddingToCart] = useState({});
+
+  const { getCurrentUser, isAuthenticated } = useAuth();
 
   useEffect(() => {
     fetchCategories();
@@ -72,7 +75,12 @@ const ProductsPage = () => {
     try {
       setAddingToCart((prev) => ({ ...prev, [product.id]: true }));
 
-      const userName = "swn"; // Demo user
+      if (!isAuthenticated()) {
+        alert("🔐 Sepete ürün eklemek için giriş yapmalısınız!");
+        return;
+      }
+
+      const userName = getCurrentUser();
 
       const item = {
         productId: product.id,

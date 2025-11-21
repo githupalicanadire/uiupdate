@@ -12,6 +12,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_catalog:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d CatalogDb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   basketdb:
     container_name: basketdb
@@ -24,6 +30,12 @@ services:
       - "5433:5432"
     volumes:
       - postgres_basket:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d BasketDb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   distributedcache:
     container_name: distributedcache
@@ -51,13 +63,34 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  identitydb:
+    container_name: identitydb
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=SwN12345678
+    restart: always
+    ports:
+      - "1434:1433"
+
+  identity.api:
+    container_name: identity.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Server=identitydb;Database=IdentityDb;User Id=sa;Password=SwN12345678;Encrypt=false;TrustServerCertificate=true;
+    depends_on:
+      - identitydb
+    ports:
+      - "6007:8080"
+
   catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__Database=Server=catalogdb;Port=5432;Database=CatalogDb;User Id=postgres;Password=postgres;Include Error Detail=true
     depends_on:
-      - catalogdb
+      catalogdb:
+        condition: service_healthy
     ports:
       - "6000:8080"
 
@@ -72,10 +105,14 @@ services:
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
     depends_on:
-      - basketdb
-      - distributedcache
-      - discount.grpc
-      - messagebroker
+      basketdb:
+        condition: service_healthy
+      distributedcache:
+        condition: service_started
+      discount.grpc:
+        condition: service_started
+      messagebroker:
+        condition: service_started
     ports:
       - "6001:8080"
 
@@ -106,7 +143,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
+      - IdentityServerSettings__Authority=http://identity.api:8080
+      - IdentityServerSettings__Audience=gateway-api
+      - IdentityServerSettings__RequireHttpsMetadata=false
     depends_on:
+      - identity.api
       - catalog.api
       - basket.api
       - ordering.api

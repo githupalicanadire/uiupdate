@@ -61,6 +61,71 @@ builder.Services.AddHealthChecks()
 
 var app = builder.Build();
 
+// Initialize database in development (no seed data for baskets - users create their own)
+if (app.Environment.IsDevelopment())
+{
+    await InitializeDatabaseAsync(app);
+}
+
+async Task InitializeDatabaseAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    // Retry logic for database connection
+    var maxRetries = 30;
+    var retryDelay = TimeSpan.FromSeconds(2);
+
+    for (int retry = 0; retry < maxRetries; retry++)
+    {
+        try
+        {
+            logger.LogInformation("🔄 Attempting to connect to PostgreSQL (attempt {Retry}/{MaxRetries})", retry + 1, maxRetries);
+
+            // Test Marten connection
+            var documentStore = scope.ServiceProvider.GetRequiredService<IDocumentStore>();
+            using var session = documentStore.LightweightSession();
+
+            // Ensure database exists and is migrated
+            await documentStore.Storage.ApplyAllConfiguredChangesToDatabaseAsync();
+
+            // Test Redis connection
+            logger.LogInformation("🔄 Testing Redis connection...");
+            var distributedCache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
+            await distributedCache.SetStringAsync("test-key", "test-value");
+            var testValue = await distributedCache.GetStringAsync("test-key");
+            await distributedCache.RemoveAsync("test-key");
+
+            if (testValue == "test-value")
+            {
+                logger.LogInformation("✅ Redis connection successful");
+            }
+            else
+            {
+                logger.LogWarning("⚠️ Redis connection issue - cache may not work properly");
+            }
+
+            logger.LogInformation("✅ Basket service initialization completed successfully");
+            logger.LogInformation("ℹ️ Baskets use Redis for caching and PostgreSQL for persistence");
+            logger.LogInformation("ℹ️ Users will create their own shopping carts - no pre-seeded baskets");
+            return;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("⚠️ Database connection failed (attempt {Retry}/{MaxRetries}): {Error}",
+                retry + 1, maxRetries, ex.Message);
+
+            if (retry == maxRetries - 1)
+            {
+                logger.LogError("❌ Failed to connect to PostgreSQL after {MaxRetries} attempts", maxRetries);
+                throw;
+            }
+
+            await Task.Delay(retryDelay);
+        }
+    }
+}
+
 // Configure the HTTP request pipeline.
 app.MapCarter();
 app.UseExceptionHandler(options => { });
